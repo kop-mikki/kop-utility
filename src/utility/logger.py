@@ -9,11 +9,10 @@ def create_logger(path):
     """
     today = datetime.now().strftime("%Y-%b-%d-%H-%M")
     logname = "{}/{}.log".format(path, today)
-    print(today)
-    print(logname) 
     # creating log file and naming the logger
     logging.basicConfig(filename=logname,
                         format="%(asctime)s | %(levelname)s: %(message)s",
                         datefmt="%m/%d/%Y %I:%M:%S",
                         filemode="a",
-                        level=logging.DEBUG)
+                        level=logging.DEBUG,
+                        force=True)
