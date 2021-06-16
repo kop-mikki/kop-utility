@@ -79,3 +79,24 @@ class SQLServerConnection(object):
         columns = [column[0] for column in self.cursor.description]
 
         return [dict(zip(columns, x)) for x in result]
+
+    def exists(self, query: str):
+        """Checks if the query returns data
+
+        Args:
+            query (str): SQL GET query
+
+        Returns:
+            bool: returns True the query returns data 
+        """
+        self.cursor.execute(query)
+        data = self.cursor.fetchall()
+        return data is not None
+        
+    def truncate(self, table: str):
+        """Truncates the table
+
+        Args:
+            table (str): Name of the tables
+        """
+        self.cursor.execute('truncate table {}'.format(table))
