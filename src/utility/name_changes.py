@@ -26,3 +26,24 @@ def camel_to_snake_dict(dict):
     for key, value in dict.items():
         new_dict[camel_to_snake(key)] = value
     return new_dict
+
+def split_name(name):
+    """
+    Splits the string by spaces, and sets all the words except the last 
+    word in first name and the last name as the last word in the string
+
+    Args:
+        name (Str): The full name
+
+    Returns:
+        Str, Str: first_name, last_name
+    """
+    name_list = name.strip().split(' ')
+    first_name = ""
+    for i in range(0, len(name_list)-1):
+        if(i < len(name_list)-2):
+            first_name += name_list[i] + " "
+        else:
+            first_name += name_list[i]
+    last_name = name_list[-1]
+    return first_name, last_name
