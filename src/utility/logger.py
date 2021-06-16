@@ -8,7 +8,9 @@ def create_logger(path):
         path (Str): Path to the log
     """
     today = datetime.now().strftime("%Y-%b-%d-%H-%M")
-    logname = "{}/{}.log".format(path, today) 
+    logname = "{}/{}.log".format(path, today)
+    print(today)
+    print(logname) 
     # creating log file and naming the logger
     logging.basicConfig(filename=logname,
                         format="%(asctime)s | %(levelname)s: %(message)s",
