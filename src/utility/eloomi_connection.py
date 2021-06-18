@@ -3,7 +3,7 @@ import os
 import time
 import logging
 from utility.name_changes import split_name
-from utility.eloomi_utility import get_department_by_name
+from utility.utility import get_department_by_name
 
 class EloomiConnection(object):
     """This class is used to connect to the eloomi api
@@ -24,8 +24,8 @@ class EloomiConnection(object):
         """
         self.logger = logger
         self.endpoint = 'https://api.eloomi.com/'
-        self.client_id = os.getenv("ELOOMI_CLIENT_ID")
-        self.client_secret = os.getenv("ELOOMI_SECRET")
+        self.client_id = os.getenv("CLIENT_ID")
+        self.client_secret = os.getenv("SECRET")
         self.access_token = self.create_access_token()
         self.headers = {
             'Content-Type': 'application/x-www-form-urlencoded',
@@ -137,7 +137,7 @@ class EloomiConnection(object):
             self.logger.error(response)
             return False
 
-    def disable_eloomi_user(self, email):
+    def disable_user(self, email):
         """This method disables the user by it's email
 
         Args:
@@ -273,7 +273,7 @@ class EloomiConnection(object):
             self.logger.error(response)
             return False
     
-    def delete_eloomi_department(self, departmentid):
+    def delete_department(self, departmentid):
         """This method deletes an department
 
         Args:
