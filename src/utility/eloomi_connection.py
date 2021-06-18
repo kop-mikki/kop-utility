@@ -22,6 +22,7 @@ class EloomiConnection(object):
             headers:                basic header for api calls, contains the client_id and authorization token(BEARER TOKEN) 
             ratelimit_remaining:    is the remaining ratelimit that the eloomi has
         """
+        self.logger = logging.getLogger(__name__)
         self.endpoint = 'https://api.eloomi.com/'
         self.client_id = os.getenv("ELOOMI_CLIENT_ID")
         self.client_secret = os.getenv("ELOOMI_SECRET")
@@ -33,7 +34,6 @@ class EloomiConnection(object):
             'Authorization': self.access_token,
         }
         self.ratelimit_remaining = 600
-        self.logger = logging.getLogger(__name__)
     
     def set_ratelimit_remaining(self, headers):
         """
