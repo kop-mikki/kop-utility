@@ -11,7 +11,7 @@ class EloomiConnection(object):
     Args:
         object (object): Extends the Class Object 
     """
-    def __init__(self):
+    def __init__(self, logger):
         """Initializes the class. creates the class varibales, including the access_token which it generates.
         
         CLASS VARIABLES
@@ -22,7 +22,7 @@ class EloomiConnection(object):
             headers:                basic header for api calls, contains the client_id and authorization token(BEARER TOKEN) 
             ratelimit_remaining:    is the remaining ratelimit that the eloomi has
         """
-        self.logger = logging.getLogger(__name__)
+        self.logger = logger
         self.endpoint = 'https://api.eloomi.com/'
         self.client_id = os.getenv("ELOOMI_CLIENT_ID")
         self.client_secret = os.getenv("ELOOMI_SECRET")
