@@ -2,8 +2,8 @@ import requests
 import os
 import time
 import logging
-from name_changes import split_name
-from eloomi_utility import get_department_by_name
+from utility.name_changes import split_name
+from utility.eloomi_utility import get_department_by_name
 
 class EloomiConnection(object):
     """This class is used to connect to the eloomi api
