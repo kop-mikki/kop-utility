@@ -1,7 +1,5 @@
 import requests
-import os
 import time
-import logging
 from utility.name_changes import split_name
 from utility.eloomi_utility import get_department_by_name
 
@@ -11,7 +9,7 @@ class EloomiConnection(object):
     Args:
         object (object): Extends the Class Object 
     """
-    def __init__(self, logger):
+    def __init__(self, logger, client_id, client_secret):
         """Initializes the class. creates the class varibales, including the access_token which it generates.
         
         CLASS VARIABLES
@@ -24,8 +22,8 @@ class EloomiConnection(object):
         """
         self.logger = logger
         self.endpoint = 'https://api.eloomi.com/'
-        self.client_id = os.getenv("CLIENT_ID")
-        self.client_secret = os.getenv("SECRET")
+        self.client_id = client_id
+        self.client_secret = client_secret
         self.access_token = self.create_access_token()
         self.headers = {
             'Content-Type': 'application/x-www-form-urlencoded',
