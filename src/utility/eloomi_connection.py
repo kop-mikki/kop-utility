@@ -116,14 +116,14 @@ class EloomiConnection(object):
         url = self.endpoint + 'v3/users-employee_id/{}'.format(user['employee_id'].strip())
         first_name, last_name = split_name(user['name'])
         data = {
-            "direct_manager_ids": [int(user.get('manager_id', None))],
-            "first_name": first_name,
-            "last_name": last_name,
-            "username": user['username'].strip(),
-            "title": user['title'].strip(),
-            "email": user['email'].strip(),
-            "department_id": [str(user['department_id'])],
-            "user_permission": 'user'
+            'first_name': first_name,
+            'last_name': last_name,
+            'username': user['username'].strip(),
+            'title': user['title'].strip(),
+            'email': user['email'].strip(),
+            'department_id': [str(user['department_id'])],
+            'direct_manager_ids': [str(user.get('manager_id', None))],
+            'user_permission': 'user'
         }
 
         print(data)
