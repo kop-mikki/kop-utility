@@ -126,6 +126,8 @@ class EloomiConnection(object):
             'direct_manager_ids': [user.get('manager_id', None)]
         }
 
+        print(data)
+
         response = requests.patch(url, headers=self.headers, data=data)
 
         if response.status_code == 200:
