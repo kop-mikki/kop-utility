@@ -130,7 +130,7 @@ class EloomiConnection(object):
 
         response = requests.patch(url, headers=self.headers, data=data)
 
-        print(response)
+        print(response.json()['data'])
         if response.status_code == 200:
             response.encoding = 'utf-8'
             self.logger.info("Successfully Updated user: {}".format(user['email']))
