@@ -2,6 +2,7 @@ import requests
 import time
 from utility.name_changes import split_name
 from utility.eloomi_utility import get_department_by_name
+import json
 
 class EloomiConnection(object):
     """This class is used to connect to the eloomi api
@@ -122,15 +123,20 @@ class EloomiConnection(object):
             'title': user['title'].strip(),
             'email': user['email'].strip(),
             'department_id': [str(user['department_id'])],
-            'direct_manager_ids': [user.get('manager_id', None)],
+            'direct_manager_ids': [user['manager_id']],
             'user_permission': 'user'
         }
 
-        print(data)
+        # for some reason this request has to be manually made. 
+        sess = requests.Session()
 
-        response = requests.patch(url, headers=self.headers, data=data)
-
-        print(response.json()['data'])
+        req = requests.Request('Patch', url, data=json.dumps(data), headers=self.headers)
+        prep = req.prepare()
+        prep.headers['Content-Type'] = "application/json"
+        prep.headers['Content-Length'] = len(json.dumps(data).encode('utf-8'))
+        
+        response = sess.send(prep)
+        
         if response.status_code == 200:
             response.encoding = 'utf-8'
             self.logger.info("Successfully Updated user: {}".format(user['email']))
