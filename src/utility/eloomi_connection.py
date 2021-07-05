@@ -123,8 +123,7 @@ class EloomiConnection(object):
             'title': user['title'].strip(),
             'email': user['email'].strip(),
             'department_id': [str(user['department_id'])],
-            'direct_manager_ids': [user['manager_id']],
-            'user_permission': 'user'
+            'direct_manager_ids': [user['manager_id']]
         }
 
         # for some reason this request has to be manually made. 
