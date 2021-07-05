@@ -107,4 +107,8 @@ class SQLServerConnection(object):
         Args: 
             query (str): custom query
         """ 
-        return self.cursor.execute(query)
+        self.cursor.execute(query)
+        result = self.cursor.fetchall()
+        columns = [column[0] for column in self.cursor.description]
+
+        return [dict(zip(columns, x)) for x in result]
