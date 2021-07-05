@@ -107,4 +107,4 @@ class SQLServerConnection(object):
         Args: 
             query (str): custom query
         """ 
-        self.cursor.execute(query)
+        return self.cursor.execute(query)
