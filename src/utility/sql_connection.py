@@ -100,3 +100,11 @@ class SQLServerConnection(object):
             table (str): Name of the tables
         """
         self.cursor.execute('truncate table {}'.format(table))
+    
+    def custom_query(self, query:str):
+        """Executes a custom query
+
+        Args: 
+            query (str): custom query
+        """ 
+        self.cursor.execute(query)
