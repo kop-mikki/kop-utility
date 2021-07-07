@@ -255,7 +255,7 @@ class EloomiConnection(object):
             return False
     
     def create_department(self, user, departments):
-        """This method creates an dapartment
+        """This method creates a department
 
         Args:
             user (EloomiUser): User with a department that does not exists and is being created
@@ -279,6 +279,54 @@ class EloomiConnection(object):
             return response.json()['data']['id']
         else:
             self.logger.warning('Creating eloomi department failed with code {}'.format(response.status_code))
+            self.logger.error(response)
+            return False
+
+    def update_department(self, department):
+        """This method updates a department, adding a leader takes 10 minutes to take effect
+
+        Args:
+            department (Dict): Eloomi Department Dict. Needs to contain 
+                               id (Int): Eloomi ID of the department
+                               access_groups (List[Str]): List of the access groups of the department
+                               code (Str): Custom code of the department
+                               leaders (List[Int]): List of eloomi user IDs that are managers of this department
+                               name (Str): Name of the department
+                               parent_id (Int): Eloomi ID of the parent department 
+                               users (List[Int]): List of user IDs that are in this department
+
+
+        Returns:
+            Dict / Bool: returns the updated department ( except leaders  ) if the request was successful, else it returns false
+        """
+        url = self.endpoint + 'v3/units/{}'.format(department['id'])
+        data = {
+            "access_groups": department['access_groups'],
+            "code": department['code'],
+            "leader_ids": department['leaders'],
+            "name": department['name'],
+            "parent_id": department['parent_id'],
+            "user_ids": department['users']
+        }
+        # for some reason this request has to be manually made. 
+        sess = requests.Session()
+
+        req = requests.Request('Patch', url, data=json.dumps(data), headers=self.headers)
+        prep = req.prepare()
+        prep.headers['Content-Type'] = "application/json"
+        prep.headers['Content-Length'] = len(json.dumps(data).encode('utf-8'))
+        
+        response = sess.send(prep)
+        
+        if response.status_code == 200:
+            response.encoding = 'utf-8'
+            # setting the rate limit
+            self.set_ratelimit_remaining(response.headers)
+            
+            self.logger.info("Successfully Updated department in eloomi")
+            return response.json()['data']
+        else:
+            self.logger.error("Updating eloomi department failed with code {}".format(response.status_code))
             self.logger.error(response)
             return False
     
