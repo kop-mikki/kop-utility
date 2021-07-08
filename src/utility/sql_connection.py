@@ -104,7 +104,7 @@ class SQLServerConnection(object):
     def custom_query(self, query:str):
         """Executes a custom query
 
-        Args: 
+        Args:
             query (str): custom query
         """ 
         self.cursor.execute(query)
