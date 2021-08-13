@@ -14,5 +14,4 @@ def create_logger(path):
                         format="%(asctime)s | %(levelname)s: %(message)s",
                         datefmt="%m/%d/%Y %I:%M:%S",
                         filemode="a",
-                        level=logging.DEBUG,
-                        force=True)
+                        level=logging.DEBUG)
