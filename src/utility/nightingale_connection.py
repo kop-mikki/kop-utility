@@ -273,7 +273,7 @@ class NightingaleConnection():
             "description": description,
             "description_local": description,
             "visibility_id": 4,
-            "measurement_connections": [{"measurement_id": x} for x in children]
+            "measurement_connections": [{"measurement_id": x, "percentage": None} for x in children]
         }
 
         response = post(url=url, data=json.dumps(data), headers=self.headers)
