@@ -240,13 +240,13 @@ class NightingaleConnection():
         else:
             print("Something Went Wrong Fetching The Measurements {}".format(response.json()['response_message']))
 
-    def get_measurement_by_code(self, code): 
+    def get_measurements_by_code(self, code): 
         """Gets all the measurements that have the code included in them
 
         Args:
             code (Str): index_code in NightinGale
         """
-        url = "{}/{}/?code={}".format(self.endpoint, "measurements", code)
+        url = "{}/{}/?page_size=0&code={}".format(self.endpoint, "measurements", code)
         response = get(url=url, headers=self.headers)
         response.encoding = "utf-8"
 
@@ -273,9 +273,7 @@ class NightingaleConnection():
             "description": description,
             "description_local": description,
             "visibility_id": 4,
-            "measurement_connections": {
-                [{"measurement_id": x} for x in children]
-            }
+            "measurement_connections": [{"measurement_id": x} for x in children]
         }
 
         response = post(url=url, data=json.dumps(data), headers=self.headers)
