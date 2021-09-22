@@ -260,3 +260,35 @@ class NightingaleConnection():
             raise ValueError(response.text)
         else:
             raise ValueError("Something Went Wrong Fetching The Measurements by code {}".format(response.json()['response_message']))
+    
+    def create_combination_index(self, index_code, children, name, description):
+        """
+            creates a index, that combines multiple measures
+        """
+        url = "{}/{}/".format(self.endpoint, "indices")
+        data = {
+            "index_code": index_code,
+            "name": name,
+            "name_local": name,
+            "description": description,
+            "description_local": description,
+            "visibility_id": 4,
+            "measurement_connections": {
+                [{"measurement_id": x} for x in children]
+            }
+        }
+
+        response = post(url=url, data=json.dumps(data), headers=self.headers)
+        response.encoding = "utf-8"
+        
+        # statuscode 201 means Created
+        if response.status_code == 201: 
+            data = response.json()['results'][0]
+            print("Successfully Created index for course: {}".format(data['name']))
+            return data['id']
+        # 500, server error, and it has a different format than other responses
+        elif response.status_code == 500:
+            print(response.text)
+            raise ValueError("500 server error")
+        else:
+            raise ValueError("Something Went Wrong Creating index {}".format(response.json()['response_message']))
