@@ -219,6 +219,27 @@ class NightingaleConnection():
             raise ValueError(response.text)
         else:
             raise ValueError("Something Went Wrong Fetching The Indices {}".format(response.json()['response_message']))
+    
+    def get_indices_by_code(self, code): 
+        """Gets all the indices that have the code included in them
+
+        Args:
+            code (Str): index_code in NightinGale
+        """
+        url = "{}/{}/?page_size=0&code={}".format(self.endpoint, "indices", code)
+        response = get(url=url, headers=self.headers)
+        response.encoding = "utf-8"
+
+        # statuscode 200 means the query was successful
+        if response.status_code == 200: 
+            data = response.json()['results']
+            return data
+        # 500, server error, and it has a different format than other responses
+        elif response.status_code == 500:
+            print(response.text)
+            raise ValueError(response.text)
+        else:
+            raise ValueError("Something Went Wrong Fetching The Measurements by code {}".format(response.json()['response_message']))
 
     def get_measurements(self):
         """
