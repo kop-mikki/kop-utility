@@ -56,8 +56,8 @@ class SQLServerConnection(object):
         table = '[{}]'.format(table)
         header = ', '.join(['[{}]'.format(x) for x in columns])
         parameters = ', '.join(['?']*len(columns))
-
-        self.cursor.execute('insert into {} ({}) values({})'.format(table, header, parameters), values)
+        
+        self.cursor.execute('INSERT INTO {} ({}) VALUES({})'.format(table, header, parameters), values)
 
     def select(self, table: str, columns: List[str] = None):
         """Executes Select statement in the connected database
@@ -112,3 +112,13 @@ class SQLServerConnection(object):
         columns = [column[0] for column in self.cursor.description]
 
         return [dict(zip(columns, x)) for x in result]
+    
+    def custom_query_no_return(self, query:str):
+        """
+        Executes a custom query, and returns nothing, 
+        Useful for custom inserts, since it doesn't return an error
+
+        Args:
+            query (str): custom query
+        """
+        self.cursor.execute(query)
