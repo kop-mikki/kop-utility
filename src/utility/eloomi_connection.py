@@ -125,7 +125,8 @@ class EloomiConnection(object):
             'department_id': [str(user['department_id'])],
             'direct_manager_ids': [user['manager_id']]
         }
-
+        self.logger.info(user)
+        self.logger.info(data)
         # for some reason this request has to be manually made. 
         sess = requests.Session()
 
@@ -159,7 +160,6 @@ class EloomiConnection(object):
         data = {
             'activate': 'deactivate'
         }
-
         response = requests.patch(url, headers=self.headers, data=data)
 
         if response.status_code == 200:
@@ -218,6 +218,8 @@ class EloomiConnection(object):
             'activate': 'instant',
             'user_permission': 'user'
         }
+        self.logger.info(user)
+        self.logger.info(data)
 
         response = requests.post(url, headers=self.headers, data=data)
 
@@ -271,7 +273,8 @@ class EloomiConnection(object):
             "parent_id": parent_id,
             "code": "{}-{}".format(user['mfld'].strip(), user['department'].strip())
         }
-
+        self.logger.info(user)
+        self.logger.info(data)
         response = requests.post(url, headers=self.headers, data=data)
         if response.status_code == 200:
             response.encoding = 'utf-8'
@@ -316,8 +319,11 @@ class EloomiConnection(object):
         prep.headers['Content-Type'] = "application/json"
         prep.headers['Content-Length'] = len(json.dumps(data).encode('utf-8'))
         
+
+        self.logger.info(data)
         response = sess.send(prep)
         
+
         if response.status_code == 200:
             response.encoding = 'utf-8'
             # setting the rate limit
