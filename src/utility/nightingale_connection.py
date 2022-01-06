@@ -1,7 +1,10 @@
-from os import getenv
-from requests import post, get
-from datetime import datetime
 import json
+import logging
+from os import getenv, truncate, uname_result
+from requests import NullHandler, post, get
+from datetime import datetime
+
+from requests.api import head
 class NightingaleConnection(): 
     """
         This class is used to connect to the Nightingale API
@@ -20,6 +23,7 @@ class NightingaleConnection():
             'Content-Type': 'application/json',
             'Authorization': "Bearer {}".format(self.token)
         }
+        self.logger = logging.getLogger(__name__)
     
     def generate_token(self):
         """
@@ -341,3 +345,155 @@ class NightingaleConnection():
             raise ValueError("500 server error")
         else:
             raise ValueError("Something Went Wrong Creating index {}".format(response.json()['response_message']))
+
+    def get_departments(self):
+        """Gets all the departments from Nightingale
+
+        Raises:
+            ValueError: [description]
+            ValueError: [description]
+        """
+        url = "{}/{}/?page_size=0".format(self.endpoint, "departments")
+        response = get(url=url, headers=self.headers)
+
+        response.encoding = "utf-8"
+        if response.status_code == 201:
+            data = response.json()["results"][0]
+            self.logger.info("Successfully fetched all departments {}".format(data))
+        elif response.status_code == 500:
+            self.logger.error("Server error 500, failed on getting departments")
+            self.logger.error("Response: {}".format(response.text))
+            raise ValueError("500 server error check logs for details")
+        else:
+            self.logger.error("Unknown error on getting departments")
+            self.logger.error(response.text)
+            raise ValueError("Unknown error check logs for details")
+
+    def create_department(self, entity_id, name, general_ledger_number = None, head_department_id = None, 
+                          head_department_name = None, head_department_name_local = None, name_local = None, 
+                          number_of_employees = None, location_id = None, next_year_budget = None,
+                          visibility_id = 4, user_id = None, department_admin_id = None, security_group_id = None,
+                          project_connection_list = None):
+        """Creates department
+
+        Args:
+            entity_id (Guid): Guid of the entity the department belongs to, doesn't really matter since the nightingale backend just ignores this and uses the 
+            name (Str): Name of the department
+            general_ledger_number (int, optional): integer number, used for mfld. Defaults to None.
+            head_department_id (Guid, optional): Guid id of the parent department. Defaults to None.
+            head_department_name (Str, optional): Name of the parent departmnent. Defaults to None.
+            head_department_name_local (Str, optional): Local name of the parent department. Defaults to None.
+            name_local (Str, optional): Local name of the department. Defaults to None.
+            number_of_employees (int, optional): integer number for the amount of employees in the department. Defaults to None.
+            location_id (Guid, optional): Guid if of the location of the department. Defaults to None.
+            next_year_budget (number, optional): Next year budget. Defaults to None.
+            visibility_id (int, optional): Visibility ID, most common is 4. Defaults to 4.
+            user_id (Guid, optional): Guid of the User. Defaults to None.
+            department_admin_id (Guid, optional): Guid of the admin. Defaults to None.
+            security_group_id (Guid, optional): Guid of the security group. Defaults to None.
+            project_connection_list (object(project_connection_list), optional): [description]. Defaults to None.
+
+        Raises:
+            ValueError: [description]
+            ValueError: [description]
+        """
+        url = "{}/{}/".format(self.endpoint, "departments")
+        data = {
+            "entity_id": entity_id,
+            "name": name,
+            "general_ledger_number": general_ledger_number,
+            "head_department_id": head_department_id,
+            "head_department_name": head_department_name,
+            "head_department_name_local": head_department_name_local,
+            "name_local": name_local,
+            "number_of_employees": number_of_employees,
+            "location_id": location_id,
+            "next_year_budget": next_year_budget,
+            "visibility_id": visibility_id,
+            "user_id": user_id,
+            "department_admin_id": department_admin_id,
+            "security_group_id": security_group_id,
+            "project_connection_list": project_connection_list
+        }
+
+        response = post(url=url, data=json.dumps(data), headers=self.headers)
+        response.encoding = "utf-8"
+        if response.status_code == 201:
+            data = response.json()["results"][0]
+            self.logger.info("Successfully created department {}".format(data))
+        elif response.status_code == 500:
+            self.logger.error("Server error 500, failed on {}".format(data))
+            self.logger.error("Response: {}".format(response.text))
+            raise ValueError("500 server error check logs for details")
+        else:
+            self.logger.error("Unknown error creating {}".format(data))
+            self.logger.error(response.text)
+            raise ValueError("Unknown error check logs for details")
+        
+    def get_users(self):
+        """Gets all the users in Nightingale
+
+        Raises:
+            ValueError: [description]
+            ValueError: [description]
+        """
+
+        url = "{}/{}/?page_size=0".format(self.endpoint, "users")
+        response = get(url=url, headers=self.headers)
+
+        response.encoding = "utf-8"
+        if response.status_code == 201:
+            data = response.json()["results"][0]
+            self.logger.info("Successfully fetched all users {}".format(data))
+        elif response.status_code == 500:
+            self.logger.error("Server error 500, failed on getting users")
+            self.logger.error("Response: {}".format(response.text))
+            raise ValueError("500 server error check logs for details")
+        else:
+            self.logger.error("Unknown error on getting users")
+            self.logger.error(response.text)
+            raise ValueError("Unknown error check logs for details")
+    
+    def create_user(self, email, culture_id, first_name = None, last_name = None, department_id = None, entity_id = None, entity_role_id = None, is_active = True):
+        """Creates a user in nightingale
+
+        Args:
+            email (Str): email of the user
+            culture_id (Str): The culture ID of the user, e.g. for Icelandic people it is 'is-IS'
+            first_name (Str, optional): First name of the user. Defaults to None.
+            last_name (Str, optional): Last name of the user. Defaults to None.
+            department_id (Str, optional): Guid of the department the user is suppose to belong to. Defaults to None.
+            entity_id (Str optional): Guid of the entity the user is suppose to belong to, doesn't matter what you put here if the the user calling this endpoint isn't a super admin. Defaults to None.
+            entity_role_id ([type], optional): [description]. Defaults to None.
+            is_active (bool, optional): Tells if the user is active or not, make false if you want to "delete" user. Defaults to True.
+
+        Raises:
+            ValueError: [description]
+            ValueError: [description]
+        """
+        url = "{}/{}/".format(self.endpoint, "departments")
+        data = {
+            "email": email,
+            "culture_id": culture_id,
+            "first_name": first_name,
+            "last_name": last_name,
+            "department_id": department_id,
+            "entity_id": entity_id,
+            "entity_role_id": entity_role_id,
+            "is_active": is_active
+        }
+
+        response = post(url=url, data=json.dumps(data), headers=self.headers)
+        response.encoding = "utf-8"
+        if response.status_code == 201:
+            data = response.json()["results"][0]
+            self.logger.info("Successfully created user {}".format(data))
+        elif response.status_code == 500:
+            self.logger.error("Server error 500, failed on {}".format(data))
+            self.logger.error("Response: {}".format(response.text))
+            raise ValueError("500 server error check logs for details")
+        else:
+            self.logger.error("Unknown error creating {}".format(data))
+            self.logger.error(response.text)
+            raise ValueError("Unknown error check logs for details")
+
