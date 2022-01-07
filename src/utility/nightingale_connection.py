@@ -439,7 +439,7 @@ class NightingaleConnection():
             ValueError: [description]
         """
 
-        url = "{}/{}/?page_size=0".format(self.endpoint, "users")
+        url = "{}/{}/?page_size=0".format(self.endpoint, "accounts")
         response = get(url=url, headers=self.headers)
 
         response.encoding = "utf-8"
