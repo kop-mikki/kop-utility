@@ -358,8 +358,9 @@ class NightingaleConnection():
 
         response.encoding = "utf-8"
         if response.status_code == 200:
-            data = response.json()["results"][0]
+            data = response.json()["results"]
             self.logger.info("Successfully fetched all departments {}".format(data))
+            return data
         elif response.status_code == 500:
             self.logger.error("Server error 500, failed on getting departments")
             self.logger.error("Response: {}".format(response.text))
@@ -443,8 +444,9 @@ class NightingaleConnection():
 
         response.encoding = "utf-8"
         if response.status_code == 200:
-            data = response.json()["results"][0]
+            data = response.json()["results"]
             self.logger.info("Successfully fetched all users {}".format(data))
+            return data
         elif response.status_code == 500:
             self.logger.error("Server error 500, failed on getting users")
             self.logger.error("Response: {}".format(response.text))
