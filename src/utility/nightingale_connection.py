@@ -357,7 +357,7 @@ class NightingaleConnection():
         response = get(url=url, headers=self.headers)
 
         response.encoding = "utf-8"
-        if response.status_code == 201:
+        if response.status_code == 200:
             data = response.json()["results"][0]
             self.logger.info("Successfully fetched all departments {}".format(data))
         elif response.status_code == 500:
@@ -442,7 +442,7 @@ class NightingaleConnection():
         response = get(url=url, headers=self.headers)
 
         response.encoding = "utf-8"
-        if response.status_code == 201:
+        if response.status_code == 200:
             data = response.json()["results"][0]
             self.logger.info("Successfully fetched all users {}".format(data))
         elif response.status_code == 500:
